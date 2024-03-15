@@ -2,6 +2,7 @@ const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
 const cors = require("cors");
+const colors = require("colors");
 
 const PORT = 5000;
 
@@ -24,8 +25,8 @@ app.use(cors({
 ));
 
 io.on('connection', (socket) => {
-    console.log('A user connected..');
-    console.log("Id ", socket.id)
+    console.log('A user connected..'.bgGreen);
+    console.log(`Id: ${socket.id}`.bgMagenta);
     socket.emit("welcome", "Welcome to the server ")
 
     socket.on("message", ({ room, message }) => {
@@ -35,20 +36,24 @@ io.on('connection', (socket) => {
 
     socket.on("join-room", (room) => {
         socket.join(room);
-        console.log(`User joined room ${room}`);
+        console.log(`User joined room ${room}`.bgGreen);
     })
 
     socket.on("disconnect", () => {
-        console.log(`User Disconnected with id ${socket.id}`);
+        console.log(`User Disconnected with id ${socket.id}`.bgRed.black);
     })
-
-
 });
 
 app.get("/", (req, res) => {
     res.send("Hello Socket.IO");
 });
 
+// io middleware
+const user = true;
+io.use((socket, next) => {
+    if(user) next();
+})
+
 server.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`Server is running on port ${PORT}`.bgCyan.white);
 });
