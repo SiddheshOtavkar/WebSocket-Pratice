@@ -15,13 +15,17 @@ app.get('/', function (req, res) {
     res.sendFile(fileName, options);
 });
 
-io.on('connection', function(socket) {
+io.on('connection', function (socket) {
     console.log("User connected");
 
-    socket.on('disconnect', function() {
+    setTimeout(function () {
+        socket.send("Sent message from server side...");
+    }, 3000);
+
+    socket.on('disconnect', function () {
         console.log("User disconnected");
     });
-    
+
 });
 
 http.listen(5000, function () {
