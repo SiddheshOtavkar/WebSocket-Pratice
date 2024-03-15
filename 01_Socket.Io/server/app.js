@@ -17,16 +17,32 @@ const io = new Server(server, {
 });
 
 app.use(cors({
-        origin: "http://localhost:5173",
-        methods: ["GET", "POST"],
-        credentials: true,
-    }
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST"],
+    credentials: true,
+}
 ));
 
 io.on('connection', (socket) => {
     console.log('A user connected..');
     console.log("Id ", socket.id)
     socket.emit("welcome", "Welcome to the server ")
+
+    socket.on("message", ({ room, message }) => {
+        console.log({ room, message });
+        io.to(room).emit("receive-message", message);
+    })
+
+    socket.on("join-room", (room) => {
+        socket.join(room);
+        console.log(`User joined room ${room}`);
+    })
+
+    socket.on("disconnect", () => {
+        console.log(`User Disconnected with id ${socket.id}`);
+    })
+
+
 });
 
 app.get("/", (req, res) => {
