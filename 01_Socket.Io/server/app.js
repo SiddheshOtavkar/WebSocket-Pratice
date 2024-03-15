@@ -3,6 +3,8 @@ const http = require("http");
 const { Server } = require("socket.io");
 const cors = require("cors");
 const colors = require("colors");
+const jwt = require('jsonwebtoken');
+const secretKeyJWT = "SIDDHESHOTAVKAR6820031234567/siddhesh";
 
 const PORT = 5000;
 
@@ -48,10 +50,18 @@ app.get("/", (req, res) => {
     res.send("Hello Socket.IO");
 });
 
+app.get('/login', (req, res) => {
+    const token = jwt.sign({ _id: "adjhvbvjavdvahkdbkajdnjandj" }, secretKeyJWT); // Sign the token
+
+    res
+        .cookie("token", token, { httpOnly: true, secure: true, sameSite: "none" })
+        .json("Login Success");
+});
+
 // io middleware
 const user = true;
 io.use((socket, next) => {
-    if(user) next();
+    if (user) next();
 })
 
 server.listen(PORT, () => {
